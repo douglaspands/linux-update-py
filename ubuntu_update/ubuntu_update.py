@@ -121,6 +121,8 @@ snap list --all | awk '/disabled/{print $1, $3}' |
             cmds += self._snap_upgrade() + self._snap_clean()
         elif app == "all" or app == "flatpak":
             cmds += self._flatpak_upgrade() + self._flatpak_clean()
+        else:
+            raise ValueError(f"Invalid app: {app}")
         print(">> UBUNTU UPDATE STARTED\n")
         self._shell(cmds)
         print("\n>> UBUNTU UPDATE COMPLETED")
