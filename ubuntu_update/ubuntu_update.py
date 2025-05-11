@@ -80,7 +80,7 @@ snap list --all | awk '/disabled/{print $1, $3}' |
             self._has_brew = self._check_application("brew")
         if not self._has_brew:
             return []
-        return ["brew cleanup --prune=all"]
+        return ["brew cleanup"]
 
     def _flatpak_upgrade(self):
         if self._has_flatpak is None:
@@ -121,6 +121,8 @@ snap list --all | awk '/disabled/{print $1, $3}' |
             cmds += self._snap_upgrade() + self._snap_clean()
         elif app == "all" or app == "flatpak":
             cmds += self._flatpak_upgrade() + self._flatpak_clean()
+        elif app == "all" or app == "brew":
+            cmds += self._brew_upgrade() + self._brew_clean()
         else:
             raise ValueError(f"Invalid app: {app}")
         print(">> UBUNTU UPDATE STARTED\n")

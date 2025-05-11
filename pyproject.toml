@@ -1,6 +1,6 @@
 [project]
 name = "ubuntu-update"
-version = "0.1.0"
+version = "0.2.0"
 description = "Ubuntu upgrade support."
 authors = [{ name = "Douglas Panhota", email = "douglaspands@gmail.com" }]
 readme = "README.md"

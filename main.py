@@ -11,7 +11,7 @@ if __name__ == "__main__":
     update_parser.add_argument(
         "application",
         help="Update the application and all installed packages.",
-        choices=("apt", "snap", "flatpak", "all"),
+        choices=("apt", "snap", "flatpak", "brew", "all"),
     )
 
     args = parser.parse_args()
