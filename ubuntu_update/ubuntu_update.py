@@ -24,6 +24,7 @@ snap list --all | awk '/disabled/{print $1, $3}' |
 
     def _shell(self, cmds: str | list[str], show_output: bool = True) -> int:
         cmd = " && ".join(cmds) if isinstance(cmds, list) else cmds
+        # print(f"{cmd=}")
         return subprocess.run(
             cmd, shell=True, capture_output=show_output is False
         ).returncode
@@ -117,11 +118,11 @@ snap list --all | awk '/disabled/{print $1, $3}' |
         cmds = []
         if app == "all" or app == "apt":
             cmds += self._apt_upgrade() + self._apt_clean()
-        elif app == "all" or app == "snap":
+        if app == "all" or app == "snap":
             cmds += self._snap_upgrade() + self._snap_clean()
-        elif app == "all" or app == "flatpak":
+        if app == "all" or app == "flatpak":
             cmds += self._flatpak_upgrade() + self._flatpak_clean()
-        elif app == "all" or app == "brew":
+        if app == "all" or app == "brew":
             cmds += self._brew_upgrade() + self._brew_clean()
         else:
             raise ValueError(f"Invalid app: {app}")
