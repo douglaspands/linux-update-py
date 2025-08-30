@@ -5,8 +5,9 @@ from pathlib import Path
 from uuid import uuid4
 
 
-class UbuntuUpdate:
+class LinuxUpdate:
     CMD_OK = 0
+    MANAGERS_SUPPORTED = ("apt", "pacman", "yay", "snap", "flatpak", "brew")
     SH_SNAP_REMOVE = r"""
 set -eu
 snap list --all | awk '/disabled/{print $1, $3}' |
@@ -20,7 +21,10 @@ snap list --all | awk '/disabled/{print $1, $3}' |
         self._has_snap: bool | None = None
         self._has_brew: bool | None = None
         self._has_flatpak: bool | None = None
+        self._has_pacman: bool | None = None
+        self._has_yay: bool | None = None
         self._temp_files: list[Path] = []
+        self._startd = False
 
     def _shell(self, cmds: str | list[str], show_output: bool = True) -> int:
         cmd = " && ".join(cmds) if isinstance(cmds, list) else cmds
@@ -29,8 +33,16 @@ snap list --all | awk '/disabled/{print $1, $3}' |
             cmd, shell=True, capture_output=show_output is False
         ).returncode
 
+    def _shell_isolate(self, cmds: str | list[str], show_output: bool = True):
+        cmds = cmds if isinstance(cmds, list) else [cmds]
+        for cmd in cmds:
+            # print(f"{cmd=}")
+            subprocess.run(
+                cmd, shell=True, capture_output=show_output is False
+            ).returncode
+
     def _check_application(self, app_name: str) -> bool:
-        if self._shell(f"type {app_name}", show_output=False) == UbuntuUpdate.CMD_OK:
+        if self._shell(f"type {app_name}", show_output=False) == LinuxUpdate.CMD_OK:
             return True
         else:
             return False
@@ -63,7 +75,7 @@ snap list --all | awk '/disabled/{print $1, $3}' |
             return []
         file = Path(f"./{uuid4()}.sh")
         self._temp_files.append(file)
-        file.write_text(UbuntuUpdate.SH_SNAP_REMOVE)
+        file.write_text(LinuxUpdate.SH_SNAP_REMOVE)
         return [f"sudo sh {file.resolve()!s}"]
 
     def _brew_upgrade(self):
@@ -102,6 +114,34 @@ snap list --all | awk '/disabled/{print $1, $3}' |
             "sudo rm -rfv /var/tmp/flatpak-cache-*",
         ]
 
+    def _pacman_upgrade(self) -> list[str]:
+        if self._has_pacman is None:
+            self._has_pacman = self._check_application("pacman")
+        if not self._has_pacman:
+            return []
+        return ["sudo pacman -Syu --noconfirm"]
+
+    def _pacman_clean(self):
+        if self._has_pacman is None:
+            self._has_pacman = self._check_application("pacman")
+        if not self._has_pacman:
+            return []
+        return ["sudo pacman -Rs $(pacman -Qtdq)", "sudo pacman --noconfirm -Sc"]
+
+    def _yay_upgrade(self) -> list[str]:
+        if self._has_yay is None:
+            self._has_yay = self._check_application("yay")
+        if not self._has_yay:
+            return []
+        return ["yay -Syu --noconfirm"]
+
+    def _yay_clean(self):
+        if self._has_yay is None:
+            self._has_yay = self._check_application("yay")
+        if not self._has_yay:
+            return []
+        return ["yay -Rs $(yay -Qtdq)", "yay --noconfirm -Sc"]
+
     def __enter__(self):
         return self
 
@@ -111,13 +151,19 @@ snap list --all | awk '/disabled/{print $1, $3}' |
             raise exc_value
 
     def temp_clean(self):
-        for file in self._temp_files:
-            file.unlink(missing_ok=True)
+        if self._startd:
+            for file in self._temp_files:
+                file.unlink(missing_ok=True)
 
     def update(self, app: str):
+        self._startd = True
         cmds = []
         if app == "all" or app == "apt":
             cmds += self._apt_upgrade() + self._apt_clean()
+        if app == "all" or app == "pacman":
+            cmds += self._pacman_upgrade() + self._pacman_clean()
+        if app == "all" or app == "yay":
+            cmds += self._yay_upgrade() + self._yay_clean()
         if app == "all" or app == "snap":
             cmds += self._snap_upgrade() + self._snap_clean()
         if app == "all" or app == "flatpak":
@@ -126,9 +172,16 @@ snap list --all | awk '/disabled/{print $1, $3}' |
             cmds += self._brew_upgrade() + self._brew_clean()
         else:
             raise ValueError(f"Invalid app: {app}")
-        print(">> UBUNTU UPDATE STARTED\n")
-        self._shell(cmds)
-        print("\n>> UBUNTU UPDATE COMPLETED")
+        print(">> LINUX DISTRO UPGRADE STARTED\n")
+        self._shell_isolate(cmds)
+        print("\n>> LINUX DISTRO UPGRADE COMPLETED")
+
+    def available_managers(self) -> list[str]:
+        available = []
+        for manager in LinuxUpdate.MANAGERS_SUPPORTED:
+            if self._check_application(manager):
+                available.append(manager)
+        return available
 
 
-__all__ = ("UbuntuUpdate",)
+__all__ = ("LinuxUpdate",)
