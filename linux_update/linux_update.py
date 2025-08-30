@@ -172,9 +172,9 @@ snap list --all | awk '/disabled/{print $1, $3}' |
             cmds += self._brew_upgrade() + self._brew_clean()
         else:
             raise ValueError(f"Invalid app: {app}")
-        print(">> LINUX DISTRO UPGRADE STARTED\n")
+        print(">> LINUX DISTRO UPDATE STARTED\n")
         self._shell_isolate(cmds)
-        print("\n>> LINUX DISTRO UPGRADE COMPLETED")
+        print("\n>> LINUX DISTRO UPDATE COMPLETED")
 
     def available_managers(self) -> list[str]:
         available = []
