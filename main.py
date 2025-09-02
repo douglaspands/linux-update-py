@@ -6,7 +6,7 @@ if __name__ == "__main__":
     from linux_update import LinuxUpdate
 
     with LinuxUpdate() as linux_update:
-        parser = argparse.ArgumentParser(description="Ubuntu Update")
+        parser = argparse.ArgumentParser(description="Linux Update")
         subparser = parser.add_subparsers(dest="command", required=True)
 
         # subparser
