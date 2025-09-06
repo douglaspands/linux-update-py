@@ -1,4 +1,4 @@
-from __future__ import annotations
+#! /usr/bin/env python3
 
 if __name__ == "__main__":
     import argparse
