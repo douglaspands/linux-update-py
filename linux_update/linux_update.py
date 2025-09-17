@@ -126,7 +126,10 @@ snap list --all | awk '/disabled/{print $1, $3}' |
             self._has_pacman = self._check_application("pacman")
         if not self._has_pacman:
             return []
-        return ["sudo pacman -Rs $(pacman -Qtdq)", "sudo pacman --noconfirm -Sc"]
+        return [
+            "sudo pacman --noconfirm -Rs $(pacman -Qtdq)",
+            "sudo pacman --noconfirm -Sc",
+        ]
 
     def _yay_upgrade(self) -> list[str]:
         if self._has_yay is None:
