@@ -9,12 +9,17 @@ Ferramenta de apoio a atualização de Distros baseadas em Linux.
 
 ## Como usar
 ```sh
+❯ python main.py update all
+```
+
+### help
+```sh
 ❯ python main.py update --help 
-usage: main.py update [-h] {apt,pacman,yay,snap,flatpak,brew,all}
+usage: main.py update [-h] {all,apt,brew,flatpak,pacman,snap,yay}
 
 positional arguments:
-  {apt,pacman,yay,snap,flatpak,brew,all}
-                        Update the application and all installed packages.
+  {all,apt,brew,flatpak,pacman,snap,yay}
+                        Update applications and all dependencies.
 
 options:
   -h, --help            show this help message and exit

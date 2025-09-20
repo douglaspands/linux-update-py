@@ -14,7 +14,7 @@ if __name__ == "__main__":
         update_parser = subparser.add_parser("update")
         update_parser.add_argument(
             "application",
-            help="Update the application and all installed packages.",
+            help="Update applications and all dependencies.",
             choices=linux_update.available_managers(),
         )
 
