@@ -11,6 +11,10 @@ Ferramenta de apoio a atualização de Distros baseadas em Linux.
 ```sh
 ❯ python main.py update all
 ```
+ou
+```sh
+❯ ./main.py update all
+```
 
 ### help
 ```sh
