@@ -9,21 +9,19 @@ Ferramenta de apoio a atualização de Distros baseadas em Linux.
 
 ## Como usar
 ```sh
-❯ python distro_upgrade.py all
-```
-ou
-```sh
-❯ ./distro_upgrade.py all
+❯ ./distro_upgrade all
 ```
 
 ### help
 ```sh
-❯ python distro_upgrade.py --help 
-usage: distro_upgrade.py [-h] {all,apt,brew,flatpak,pacman,snap,yay}
+❯ distro_upgrade --help 
+usage: distro_upgrade [-h] {all,apt,brew,flatpak,pacman,snap,yay}
+
+distro linux upgrade tool
 
 positional arguments:
-  {all,apt,brew,flatpak,pacman,snap,yay}
-                        Update applications and all dependencies.
+  {all,brew,flatpak,pacman,snap,yay}
+                        package manager
 
 options:
   -h, --help            show this help message and exit
