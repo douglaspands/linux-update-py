@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import argparse
 import subprocess
+import sys
 from pathlib import Path
 from time import perf_counter as time
 from uuid import uuid4
@@ -145,19 +146,23 @@ snap list --all | awk '/disabled/{print $1, $3}' |
 
 if __name__ == "__main__":
     with DistroUpgrade() as distro_upgrade:
-        parser = argparse.ArgumentParser(description="Distro Linux Upgrade")
+        parser = argparse.ArgumentParser(description="distro linux upgrade tool")
         parser.add_argument(
             "package",
-            help="Packages upgrade using the chosen package manager.",
+            help="package manager.",
             choices=distro_upgrade.available_managers(),
         )
 
+        if len(sys.argv) == 1:
+            parser.print_help(sys.stderr)
+            sys.exit(1)
+
         args = parser.parse_args()
-        print(">> Distro Linux upgrade started\n")
+        print(">> distro Linux upgrade started\n")
 
         time_start = time()
         distro_upgrade.upgrade(app=args.package)
         time_total = time() - time_start
 
-        print(f"\n>> Total time taken: {time_total:.2f} seconds")
-        print(">> Distro Linux upgrade completed")
+        print(f"\n>> total time taken: {time_total:.2f} seconds")
+        print(">> distro Linux upgrade completed")
