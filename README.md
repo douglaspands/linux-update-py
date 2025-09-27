@@ -1,4 +1,4 @@
-# Linux Update
+# Distro Upgrade
 Ferramenta de apoio a atualização de Distros baseadas em Linux.
 
 ## Requisitos
