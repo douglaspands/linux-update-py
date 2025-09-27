@@ -1,11 +1,14 @@
+#! /usr/bin/env python3
 from __future__ import annotations
 
+import argparse
 import subprocess
 from pathlib import Path
+from time import perf_counter as time
 from uuid import uuid4
 
 
-class LinuxUpdate:
+class DistroUpgrade:
     CMD_OK = 0
     MANAGERS_SUPPORTED = ("apt", "pacman", "yay", "snap", "flatpak", "brew")
     SH_SNAP_REMOVE = r"""
@@ -37,7 +40,7 @@ snap list --all | awk '/disabled/{print $1, $3}' |
             ).returncode
 
     def _check_application(self, app_name: str) -> bool:
-        if self._shell(f"type {app_name}", show_output=False) == LinuxUpdate.CMD_OK:
+        if self._shell(f"type {app_name}", show_output=False) == DistroUpgrade.CMD_OK:
             return True
         else:
             return False
@@ -54,7 +57,7 @@ snap list --all | awk '/disabled/{print $1, $3}' |
     def _snap_clean(self):
         file = Path(f"./{uuid4()}.sh")
         self._temp_files.append(file)
-        file.write_text(LinuxUpdate.SH_SNAP_REMOVE)
+        file.write_text(DistroUpgrade.SH_SNAP_REMOVE)
         return [f"sudo sh {file.resolve()!s}"]
 
     def _brew_upgrade(self):
@@ -105,7 +108,7 @@ snap list --all | awk '/disabled/{print $1, $3}' |
             for file in self._temp_files:
                 file.unlink(missing_ok=True)
 
-    def update(self, app: str):
+    def upgrade(self, app: str):
         self._update_started = True
         choices = self._available_managers()
         cmds = []
@@ -128,7 +131,7 @@ snap list --all | awk '/disabled/{print $1, $3}' |
 
     def _available_managers(self) -> list[str]:
         if not self._available:
-            for manager in LinuxUpdate.MANAGERS_SUPPORTED:
+            for manager in DistroUpgrade.MANAGERS_SUPPORTED:
                 if self._check_application(manager):
                     self._available.add(manager)
         return list(self._available)
@@ -140,4 +143,21 @@ snap list --all | awk '/disabled/{print $1, $3}' |
         return sorted(available)
 
 
-__all__ = ("LinuxUpdate",)
+if __name__ == "__main__":
+    with DistroUpgrade() as distro_upgrade:
+        parser = argparse.ArgumentParser(description="Distro Linux Upgrade")
+        parser.add_argument(
+            "package",
+            help="Packages upgrade using the chosen package manager.",
+            choices=distro_upgrade.available_managers(),
+        )
+
+        args = parser.parse_args()
+        print(">> Distro Linux upgrade started\n")
+
+        time_start = time()
+        distro_upgrade.upgrade(app=args.package)
+        time_total = time() - time_start
+
+        print(f"\n>> Total time taken: {time_total:.2f} seconds")
+        print(">> Distro Linux upgrade completed")

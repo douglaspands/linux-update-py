@@ -1,7 +1,7 @@
 [project]
-name = "linux-update"
-version = "0.4.0"
-description = "Linux SO upgrade support."
+name = "distro-upgrade"
+version = "0.5.0"
+description = "Distro Linux SO upgrade support."
 authors = [{ name = "Douglas Panhota", email = "douglaspands@gmail.com" }]
 readme = "README.md"
 requires-python = ">=3.13"

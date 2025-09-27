@@ -9,17 +9,17 @@ Ferramenta de apoio a atualização de Distros baseadas em Linux.
 
 ## Como usar
 ```sh
-❯ python main.py update all
+❯ python distro_upgrade.py all
 ```
 ou
 ```sh
-❯ ./main.py update all
+❯ ./distro_upgrade.py all
 ```
 
 ### help
 ```sh
-❯ python main.py update --help 
-usage: main.py update [-h] {all,apt,brew,flatpak,pacman,snap,yay}
+❯ python distro_upgrade.py --help 
+usage: distro_upgrade.py [-h] {all,apt,brew,flatpak,pacman,snap,yay}
 
 positional arguments:
   {all,apt,brew,flatpak,pacman,snap,yay}
