@@ -90,10 +90,10 @@ snap list --all | awk '/disabled/{print $1, $3}' |
         ]
 
     def _yay_upgrade(self) -> list[str]:
-        return ["yay -Syu --noconfirm"]
+        return ["yay --noconfirm -Syu"]
 
     def _yay_clean(self):
-        return ["yay -Rs $(yay -Qtdq)", "yay --noconfirm -Sc"]
+        return ["yay --noconfirm -Rs $(yay -Qtdq)", "yay --noconfirm -Sc"]
 
     def __enter__(self):
         return self
