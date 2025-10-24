@@ -77,7 +77,7 @@ snap list --all | awk '/disabled/{print $1, $3}' |
     def _flatpak_clean(self):
         return [
             "flatpak uninstall --unused -y",
-            "sudo rm -rfv /var/tmp/flatpak-cache-*",
+            "rm -rfv /var/tmp/flatpak-cache-*",
         ]
 
     def _pacman_upgrade(self) -> list[str]:
